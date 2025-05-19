@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sk045-teammate
+  namespace: skala-practice
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: public-nginx
+  rules:
+    - host: sk045-tls.skala25a.project.skala-ai.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: sk045-teammate
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - sk045-tls.skala25a.project.skala-ai.com
+      secretName: skala25-manual-tls-secret
