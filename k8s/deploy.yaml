@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: sk045-teammate
-          image: amdp-registry.skala-ai.com/skala25a/sk045-teammate:1.0.0
+          image: amdp-registry.skala-ai.com/skala25a/sk045-teammate:3.0.1-3-98ab70b917a1
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
