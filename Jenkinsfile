@@ -4,12 +4,12 @@ pipeline {
     environment {
         GIT_URL = 'https://github.com/novventa/teammate'
         GIT_BRANCH = 'main' // 또는 master
-        GIT_ID = 'sk045-teammate' // GitHub PAT credential ID
+        GIT_ID = 'sk045-teammate' // GitHub PAT  credential ID
         GIT_USER_NAME = 'novventa' // GitHub 사용자 이름
         GIT_USER_EMAIL = 'novventa@naver.com'
         IMAGE_REGISTRY = 'amdp-registry.skala-ai.com/skala25a'
         IMAGE_NAME = 'sk045-teammate'
-        IMAGE_TAG = '3.0.0'
+        IMAGE_TAG = '3.0.1'
         DOCKER_CREDENTIAL_ID = 'skala-image-registry-id'  // Harbor 인증 정보 ID
     }
 
