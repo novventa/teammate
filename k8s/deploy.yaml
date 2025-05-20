@@ -22,17 +22,16 @@ spec:
           ports:
             - containerPort: 8080
             - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: sk045-teammate-config
           env:
             - name: USER_NAME
               value: sk045
             - name: LOGGING_LEVEL_ROOT
               value: DEBUG
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:mariadb://host.docker.internal:3306/teammate
             - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
               value: org.hibernate.dialect.MariaDBDialect
-            - name: SPRING_DATASOURCE_USERNAME
-              value: root
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
