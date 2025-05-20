@@ -18,6 +18,20 @@ spec:
                 name: sk045-teammate
                 port:
                   number: 8080
+          - path: /swagger-ui
+            pathType: Prefix
+            backend:
+              service:
+                name: sk045-teammate
+                port:
+                  number: 8080
+          - path: /v3/api-docs
+            pathType: Prefix
+            backend:
+              service:
+                name: sk045-teammate
+                port:
+                  number: 8080
   tls:
     - hosts:
         - sk045-tls.skala25a.project.skala-ai.com
