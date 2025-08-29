@@ -22,9 +22,11 @@ spec:
           ports:
             - containerPort: 8080
             - containerPort: 8081
+          # ConfigMap의 모든 데이터를 환경 변수로 가져옵니다.
           envFrom:
             - configMapRef:
                 name: sk045-teammate-config
+          # 개별 환경 변수를 설정합니다. (envFrom과 동일한 레벨)
           env:
             - name: USER_NAME
               value: sk045
