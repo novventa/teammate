@@ -88,6 +88,6 @@ jobs:
       run: |
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'github-actions@github.com'
-        git add k8s/deployment.yaml
+        git add k8s/deploy.yaml
         # 커밋 메시지에 [ci skip]을 추가하여 워크플로우 무한 반복을 방지합니다.
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update image tag to ${{ github.sha }} [ci skip]"; git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }})
