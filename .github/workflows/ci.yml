@@ -30,7 +30,7 @@ jobs:
 
     # mvnw(Maven Wrapper)에 실행 권한을 부여합니다.
     - name: Grant execute permission for Maven Wrapper
-      run: chmod +x ./mvnw
+      run: chmod +x mvnw
 
     # Maven 의존성을 캐시하여 빌드 속도를 향상시킵니다. pom.xml 파일에 따라 캐시 키가 생성됨
     - name: Cache Maven packages
