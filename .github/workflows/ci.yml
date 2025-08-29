@@ -2,7 +2,7 @@
 name: Build, Push, and Update Deployment
 
 # 워크플로우를 트리거하는 이벤트를 정의합니다.
-# 이 워크플로우는 main 브랜치에 대한 푸시 이벤트 또는 main 브랜치로의 풀 리퀘스트 이벤트가 발생할 때마다 트리거
+# 이 워크플로우는 main 브랜치에 대한 푸시 이벤트 또는 main 브랜치로의 풀 리퀘스트 이벤트가 발생할 때마다 트리거됩니다.
 on:
   push:
     branches:
@@ -11,13 +11,13 @@ on:
     branches:
       - main  # main 브랜치로의 풀 리퀘스트가 발생하면 실행
 
-# 빌드 작업 정의  
+# 빌드 작업 정의
 jobs:
   build:
-    runs-on: ubuntu-latest  #  build 작업이 정의되며 작업은 최신 버전의 Ubuntu 환경에서 실행됨
+    runs-on: ubuntu-latest  # 작업은 최신 버전의 Ubuntu 환경에서 실행됩니다.
     steps:
     # 레포지토리의 코드를 체크아웃합니다.
-    # 현재 레포지토리의 코드를 체크아웃하여 빌드와 배포에 필요한 파일들을 가져옴.
+    # 현재 레포지토리의 코드를 체크아웃하여 빌드와 배포에 필요한 파일들을 가져옵니다.
     - name: Checkout repository
       uses: actions/checkout@v3
 
@@ -28,22 +28,24 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # mvnw(Maven Wrapper)에 실행 권한을 부여합니다.
-    - name: Grant execute permission for Maven Wrapper
-      run: chmod +x mvnw
+    # gradlew(Gradle Wrapper)에 실행 권한을 부여합니다.
+    - name: Grant execute permission for Gradle Wrapper
+      run: chmod +x ./gradlew
 
-    # Maven 의존성을 캐시하여 빌드 속도를 향상시킵니다. pom.xml 파일에 따라 캐시 키가 생성됨
-    - name: Cache Maven packages
+    # Gradle 의존성을 캐시하여 빌드 속도를 향상시킵니다.
+    - name: Cache Gradle packages
       uses: actions/cache@v3
       with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
-          ${{ runner.os }}-maven-
-    
-    # Maven Wrapper를 사용하여 프로젝트를 빌드. 테스트는 건너 뛰고 빌드만 진행.
-    - name: Build with Maven Wrapper
-      run: ./mvnw package -DskipTests
+          ${{ runner.os }}-gradle-
+
+    # Gradle Wrapper를 사용하여 프로젝트를 빌드합니다. 테스트는 건너뜁니다.
+    - name: Build with Gradle Wrapper
+      run: ./gradlew build -x test
 
     # AWS 자격 증명을 설정합니다.
     - name: Configure AWS credentials
@@ -52,16 +54,16 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-southeast-1
-    
+
     # Amazon ECR(Elastic Container Registry)에 로그인합니다.
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-    
+
     # Docker 이미지를 빌드하고 ECR에 푸시합니다.
     # ECR_REGISTRY: Amazon ECR 레지스트리 URL.
     # ECR_REPOSITORY: ECR 내 저장소 이름.
-    # IMAGE_TAG: GitHub 커밋 SHA를 이미지 태그로 사용하여 이미지의 버전을 관리합니다. 
+    # IMAGE_TAG: GitHub 커밋 SHA를 이미지 태그로 사용하여 이미지의 버전을 관리합니다.
     # 이 이미지가 빌드되고, 지정된 ECR 리포지토리에 푸시됩니다.
     - name: Build, tag, and push image to Amazon ECR
       env:
@@ -72,20 +74,20 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    # Kubernetes 배포 YAML 파일(k8s/deployment.yaml)의 image 태그를 새로 빌드되는 이미지 태그로 업데이트합니다.
+    # Kubernetes 배포 YAML 파일(k8s/deployment.yaml)의 image 태그를 새로 빌드된 이미지 태그로 업데이트합니다.
     - name: Update Deployment YAML
       run: |
         sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}|" k8s/deployment.yaml
       env:
         ECR_REGISTRY: 514090833954.dkr.ecr.ap-southeast-1.amazonaws.com
         ECR_REPOSITORY: cursor-k8s-cluster-repo
-        
+
     # 변경사항이 있으면 커밋하고 푸시합니다.
-    # 변경된 k8s/deployment.yaml파일을 git에 push
+    # 변경된 k8s/deployment.yaml 파일을 git에 push합니다.
     - name: Commit and push if there are changes
       run: |
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'github-actions@github.com'
         git add k8s/deployment.yaml
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Update image tag to ${{ github.sha }}"; git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }})
-        
+        # 커밋 메시지에 [ci skip]을 추가하여 워크플로우 무한 반복을 방지합니다.
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update image tag to ${{ github.sha }} [ci skip]"; git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }})
