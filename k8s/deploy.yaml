@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: cursor-k8s-cluster-repo
-          image: 514090833954.dkr.ecr.ap-southeast-1.amazonaws.com/cursor-k8s-cluster-repo:a8538175da96bd42b40e674ddddfc57f9295979d
+          image: 514090833954.dkr.ecr.ap-southeast-1.amazonaws.com/cursor-k8s-cluster-repo:69ea69a18ac253da1450638bb6ee6ac73051dcd6
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
