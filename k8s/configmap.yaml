@@ -4,5 +4,5 @@ metadata:
   name: sk045-teammate-config
   namespace: skala-practice
 data:
-  SPRING_DATASOURCE_URL: "jdbc:mariadb://10.250.72.120:3306/teammate"
+  SPRING_DATASOURCE_URL: "jdbc:mariadb://47.129.238.141:3306/teammate"
   SPRING_DATASOURCE_USERNAME: "root"
