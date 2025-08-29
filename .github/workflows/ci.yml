@@ -77,7 +77,7 @@ jobs:
     # Kubernetes 배포 YAML 파일(k8s/deployment.yaml)의 image 태그를 새로 빌드된 이미지 태그로 업데이트합니다.
     - name: Update Deployment YAML
       run: |
-        sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}|" k8s/deployment.yaml
+        sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}|" k8s/deploy.yaml
       env:
         ECR_REGISTRY: 514090833954.dkr.ecr.ap-southeast-1.amazonaws.com
         ECR_REPOSITORY: cursor-k8s-cluster-repo
