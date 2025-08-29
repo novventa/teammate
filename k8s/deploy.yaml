@@ -16,8 +16,8 @@ spec:
         app: sk045-teammate
     spec:
       containers:
-        - name: sk045-teammate
-          image: amdp-registry.skala-ai.com/skala25a/sk045-teammate:3.0.1-3-98ab70b917a1
+        - name: cursor-k8s-cluster-repo
+          image: 514090833954.dkr.ecr.ap-southeast-1.amazonaws.com/cursor-k8s-cluster-repo
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
